@@ -92,5 +92,22 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>com.allogy.maven.wagon</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.0</version>
+      </extension>
+    </extensions>
   </build>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>artifacts.chrisdima.io</id>
+      <url>s3://artifacts.chrisdima.io/snapshot</url>
+    </snapshotRepository>
+    <repository>
+      <id>artifacts.chrisdima.io</id>
+      <url>s3://artifacts.chrisdima.io/release</url>
+    </repository>
+  </distributionManagement>
 </project>

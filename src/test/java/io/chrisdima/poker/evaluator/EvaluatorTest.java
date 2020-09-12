@@ -270,7 +270,7 @@ public class EvaluatorTest {
         ArrayList<Hand> hands = new ArrayList<>();
         hands.add(Evaluator.createHand(new ArrayList<>(List.of(
                 new Card(Rank.FIVE, Suit.HEARTS),
-                new Card(Rank.SEVEN, Suit.DIAMONDS)
+                new Card(Rank.SIX, Suit.HEARTS)
         ))));
 
         hands.add(Evaluator.createHand(new ArrayList<>(List.of(

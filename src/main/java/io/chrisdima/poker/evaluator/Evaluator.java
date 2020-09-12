@@ -1,8 +1,15 @@
 package io.chrisdima.poker.evaluator;
 
 import org.apache.commons.math3.stat.Frequency;
+import org.apache.commons.math3.util.Combinations;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Evaluator {
     private static final List<Long> QUADS = Arrays.asList(1L, 4L);
@@ -10,66 +17,45 @@ public class Evaluator {
     private static final List<Long> THREE_OF_KIND = Arrays.asList(1L, 1L, 3L);
     private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
-    public static void main( String[] args ){
-        ArrayList<Card> quads = new ArrayList<>();
-        quads.add(new Card(Rank.KING, Suit.CLUBS));
-        quads.add(new Card(Rank.KING, Suit.HEARTS));
-        quads.add(new Card(Rank.KING, Suit.DIAMONDS));
-        quads.add(new Card(Rank.KING, Suit.SPADES));
-        quads.add(new Card(Rank.TWO, Suit.CLUBS));
+    public static void main( String[] args ){}
 
-        ArrayList<Card> boat = new ArrayList<>();
-        boat.add(new Card(Rank.SIX, Suit.CLUBS));
-        boat.add(new Card(Rank.SIX, Suit.DIAMONDS));
-        boat.add(new Card(Rank.SIX, Suit.SPADES));
-        boat.add(new Card(Rank.THREE, Suit.CLUBS));
-        boat.add(new Card(Rank.THREE, Suit.SPADES));
+    private static ArrayList<Hand> buildCompositeHands(Hand hand, Hand communityHand){
+        ArrayList<Card> allCards = new ArrayList<>();
+        allCards.addAll(hand.getCards());
+        allCards.addAll(communityHand.getCards());
 
-        ArrayList<Card> highcard1 = new ArrayList<>();
-        highcard1.add(new Card(Rank.TEN, Suit.CLUBS));
-        highcard1.add(new Card(Rank.JACK, Suit.DIAMONDS));
-        highcard1.add(new Card(Rank.QUEEN, Suit.SPADES));
-        highcard1.add(new Card(Rank.KING, Suit.CLUBS));
-        highcard1.add(new Card(Rank.ACE, Suit.SPADES));
-
-        ArrayList<Card> highcard2 = new ArrayList<>();
-        highcard2.add(new Card(Rank.ACE, Suit.CLUBS));
-        highcard2.add(new Card(Rank.TWO, Suit.DIAMONDS));
-        highcard2.add(new Card(Rank.THREE, Suit.SPADES));
-        highcard2.add(new Card(Rank.FOUR, Suit.CLUBS));
-        highcard2.add(new Card(Rank.FIVE, Suit.HEARTS));
-
-        Hand hBoat = createHand(boat);
-        Hand hQuads = createHand(quads);
-        Hand hand1 = createHand(highcard1);
-        Hand hand2 = createHand(highcard2);
-        ArrayList<Hand> hands = new ArrayList<>();
-        hands.add(hand2);
-        hands.add(hQuads);
-        hands.add(hBoat);
-        hands.add(hand1);
-        System.out.println(hands);
-        hands.sort(Collections.reverseOrder());
-        System.out.println(hands);
-        System.out.println(winner(hands));
+        ArrayList<Hand> compositeHands = new ArrayList<>();
+        for (int[] ints : new Combinations(allCards.size(), 5)){
+            compositeHands.add(
+                    Evaluator.createHand(
+                    Arrays.stream(ints).mapToObj(allCards::get).collect(
+                            Collectors.toCollection(ArrayList::new))));
+        }
+        return compositeHands;
     }
-
-    /**hand
+    /**
+     * NOTE: Will need to make a two card hand valid.
      * Determines the winner of a list of hands.
      * @param hands ArrayList of hands to find winner of.
      * @return The winning hand.
      */
-//    public static Hand winner(ArrayList<Hand> hands){
-//        Hand winner = hands.remove(0);
-//        for(Hand hand: hands){
-//            if(compareHand(hand, winner)) {
-//                compareHand(hand, winner);
-//                winner = hand;
-//            }
-//            compareHand(hand, winner);
-//        }
-//        return winner;
-//    }
+    public static ArrayList<Hand> winner(ArrayList<Hand> hands, Hand communityHand){
+
+        // Map the best of each hand's composite hands to the original hand
+        HashMap<Hand, Hand> bestsMap = new HashMap<>();
+        hands.forEach(hand -> bestsMap.put(winner(buildCompositeHands(hand, communityHand)), hand));
+
+        // Find the best of the best composite hands.
+        Hand best =  winner(new ArrayList<>(bestsMap.keySet()));
+
+        return new ArrayList<>(List.of(bestsMap.get(best), best));
+    }
+
+    /**
+     * Determines the winner of a list of hands.
+     * @param hands ArrayList of hands to find winner of.
+     * @return The winning hand.
+     */
     public static Hand winner(ArrayList<Hand> hands){
         return rankHands(hands).get(0);
     }
@@ -98,34 +84,38 @@ public class Evaluator {
 
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);
-        hand.setHistogram(getHistogram(cards));
-        ArrayList<Long> counts = new ArrayList<>(hand.getHistogram().values());
-        Collections.sort(counts);
-        hand.setCounts(counts);
-        if(hand.getCounts().size() == 2){
-            if(hand.getCounts().equals(new ArrayList<>(QUADS))){
-                hand.setQuads(true);
-            } else if(hand.getCounts().equals(new ArrayList<>(BOAT))){
-                hand.setBoat(true);
+
+        // If we don't have 5 cards then we have an incomplete hand, skip all evaluations.
+        if(cards.size() == 5) {
+            hand.setHistogram(getHistogram(cards));
+            ArrayList<Long> counts = new ArrayList<>(hand.getHistogram().values());
+            Collections.sort(counts);
+            hand.setCounts(counts);
+            if (hand.getCounts().size() == 2) {
+                if (hand.getCounts().equals(new ArrayList<>(QUADS))) {
+                    hand.setQuads(true);
+                } else if (hand.getCounts().equals(new ArrayList<>(BOAT))) {
+                    hand.setBoat(true);
+                }
+            } else if (hand.getCounts().size() == 3) {
+                if (hand.getCounts().equals(new ArrayList<>(THREE_OF_KIND))) {
+                    hand.setThreeOfAKind(true);
+                } else if (hand.getCounts().equals(new ArrayList<>(TWO_PAIR))) {
+                    hand.setTwoPair(true);
+                }
+            } else if (hand.getCounts().size() == 4) {
+                hand.setOnePair(true);
             }
-        } else if(hand.getCounts().size() == 3){
-            if(hand.getCounts().equals(new ArrayList<>(THREE_OF_KIND))){
-                hand.setThreeOfAKind(true);
-            }else if(hand.getCounts().equals(new ArrayList<>(TWO_PAIR))){
-                hand.setTwoPair(true);
+            hand.setFlush(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1);
+            hand.setStraight(testForStraight(hand));
+            hand.setStraightFlush(hand.isStraight() && hand.isFlush());
+            hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isThreeOfAKind() || hand.isTwoPair() || hand.isOnePair()
+                    || hand.isFlush() || hand.isStraight() || hand.isStraightFlush()));
+            if (hand.isHighCard()) {
+                hand.setHighestCard(cards.get(0));
             }
-        } else if (hand.getCounts().size() == 4) {
-            hand.setOnePair(true);
+            hand.setHandValue(calcHandValue(hand));
         }
-        hand.setFlush(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1);
-        hand.setStraight(testForStraight(hand));
-        hand.setStraightFlush(hand.isStraight() && hand.isFlush());
-        hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isThreeOfAKind() || hand.isTwoPair() || hand.isOnePair()
-                || hand.isFlush()||hand.isStraight()||hand.isStraightFlush()));
-        if(hand.isHighCard()) {
-            hand.setHighestCard(cards.get(0));
-        }
-        hand.setHandValue(calcHandValue(hand));
         return hand;
     }
 

@@ -11,10 +11,7 @@ public class EvaluatorTest {
     @Test
     public void cardCount(){
         assertThrows(IllegalStateException.class, () -> Evaluator.createHand(new ArrayList<>(List.of(
-                new Card(Rank.TWO, Suit.HEARTS),
-                new Card(Rank.THREE, Suit.HEARTS),
-                new Card(Rank.FOUR, Suit.DIAMONDS),
-                new Card(Rank.FIVE, Suit.CLUBS)
+                new Card(Rank.TWO, Suit.HEARTS)
         ))));
 
         assertThrows(IllegalStateException.class, () -> Evaluator.createHand(new ArrayList<>(List.of(
@@ -212,5 +209,75 @@ public class EvaluatorTest {
 
         ArrayList<Hand> againstStraightFlush = new ArrayList<>(List.of(straight, straightFlush));
         assertNotEquals(straight, Evaluator.winner(againstStraightFlush));
+    }
+
+    @Test
+    public void winnerHoldem7Cards(){
+        Hand communityHand = Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.SEVEN, Suit.HEARTS),
+                new Card(Rank.JACK, Suit.DIAMONDS),
+                new Card(Rank.FOUR, Suit.CLUBS),
+                new Card(Rank.FIVE, Suit.SPADES)
+        )));
+
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.JACK, Suit.HEARTS)
+        ))));
+
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.DIAMONDS),
+                new Card(Rank.SEVEN, Suit.DIAMONDS)
+        ))));
+
+        assertEquals(hands.get(0), Evaluator.winner(hands, communityHand).get(0));
+    }
+
+    @Test
+    public void winnerHoldem6Cards(){
+        Hand communityHand = Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.SEVEN, Suit.HEARTS),
+                new Card(Rank.JACK, Suit.DIAMONDS),
+                new Card(Rank.QUEEN, Suit.CLUBS)
+        )));
+
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.QUEEN, Suit.DIAMONDS),
+                new Card(Rank.QUEEN, Suit.HEARTS)
+        ))));
+
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.JACK, Suit.HEARTS)
+        ))));
+
+        assertEquals(hands.get(0), Evaluator.winner(hands, communityHand).get(0));
+    }
+
+    @Test
+    public void winnerHoldem5Cards(){
+        Hand communityHand = Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.THREE, Suit.HEARTS),
+                new Card(Rank.FOUR, Suit.HEARTS),
+                new Card(Rank.QUEEN, Suit.CLUBS)
+        )));
+
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.FIVE, Suit.HEARTS),
+                new Card(Rank.SIX, Suit.HEARTS)
+        ))));
+
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.QUEEN, Suit.HEARTS)
+        ))));
+
+        assertEquals(hands.get(0), Evaluator.winner(hands, communityHand).get(0));
     }
 }

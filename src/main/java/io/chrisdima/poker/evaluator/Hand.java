@@ -23,11 +23,11 @@ public class Hand implements Comparable<Hand>{
     private boolean highCard;
 
     public Hand(ArrayList<Card> cards){
-        if(cards.size() == 5) {
+        if(cards.size() <= 5 && cards.size() >= 2) {
             cards.sort(Collections.reverseOrder());
             this.cards = cards;
         } else {
-            throw new IllegalStateException("Requires 5 cards in hand.");
+            throw new IllegalStateException("Requires 2-5 cards in hand. Got " + cards.size());
         }
     }
 

@@ -27,6 +27,6 @@ public class Card implements Comparable<Card>{
 
     @Override
     public String toString(){
-        return String.valueOf(unicodeChar + "[r: " + rank + " , s: " + suit + "]");
+        return unicodeChar + "[r: " + rank + " , s: " + suit + "]";
     }
 }

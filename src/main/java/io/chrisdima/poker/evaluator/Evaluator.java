@@ -19,69 +19,6 @@ public class Evaluator {
 
     public static void main( String[] args ){}
 
-    private static ArrayList<Hand> buildCompositeHands(Hand hand, Hand communityHand){
-        ArrayList<Card> allCards = new ArrayList<>();
-        allCards.addAll(hand.getCards());
-        allCards.addAll(communityHand.getCards());
-
-        ArrayList<Hand> compositeHands = new ArrayList<>();
-        for (int[] ints : new Combinations(allCards.size(), 5)){
-            compositeHands.add(
-                    Evaluator.createHand(
-                    Arrays.stream(ints).mapToObj(allCards::get).collect(
-                            Collectors.toCollection(ArrayList::new))));
-        }
-        return compositeHands;
-    }
-    /**
-     * NOTE: Will need to make a two card hand valid.
-     * Determines the winner of a list of hands.
-     * @param hands ArrayList of hands to find winner of.
-     * @return The winning hand.
-     */
-    public static ArrayList<Hand> winner(ArrayList<Hand> hands, Hand communityHand){
-
-        // Map the best of each hand's composite hands to the original hand
-        HashMap<Hand, Hand> bestsMap = new HashMap<>();
-        hands.forEach(hand -> bestsMap.put(winner(buildCompositeHands(hand, communityHand)), hand));
-
-        // Find the best of the best composite hands.
-        Hand best =  winner(new ArrayList<>(bestsMap.keySet()));
-
-        return new ArrayList<>(List.of(bestsMap.get(best), best));
-    }
-
-    /**
-     * Determines the winner of a list of hands.
-     * @param hands ArrayList of hands to find winner of.
-     * @return The winning hand.
-     */
-    public static Hand winner(ArrayList<Hand> hands){
-        return rankHands(hands).get(0);
-    }
-    /**
-     * Ranks hands from highest (winner) to lowest.
-     * @param hands An ArrayList of hands to be ranked
-     * @return Ranked ArrayList of hands.
-     */
-    public static ArrayList<Hand> rankHands(ArrayList<Hand> hands){
-        hands.sort(Collections.reverseOrder());
-        return hands;
-    }
-
-    public static boolean compareHand(Hand hand1, Hand hand2){
-        if(hand1.getHandValue() > hand2.getHandValue()){
-            return true;
-        } else if(hand1.getHandValue() < hand2.getHandValue()){
-            return false;
-        } else if(hand1.getHandValue() == hand2.getHandValue()){
-            Grouped grouped1 = new Grouped(hand1);
-            Grouped grouped2 = new Grouped(hand2);
-            return grouped1.compare(grouped2);
-        }
-        return false;
-    }
-
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);
 
@@ -119,28 +56,47 @@ public class Evaluator {
         return hand;
     }
 
-    private static boolean testForStraight(Hand hand){
-        ArrayList<Card> cards = hand.getCards();
-        boolean highStraight =
-                cards.get(0).getRank() - cards.get(4).getRank()
-                == 4;
-        // If cards contain an Ace and it's not a high straight test for Ace high and low straight.
-        if(!highStraight && hand.containsByRank(Rank.ACE)){
-            cards.get(0).setRank(1);
-            cards.sort(Collections.reverseOrder());
-            boolean lowStraight =
-                    cards.get(0).getRank() - cards.get(cards.size()-1).getRank()
-                    == 4;
 
-            // If we didn't find a low straight put rank back.
-            if(lowStraight){
-                return true;
-            } else
-                cards.get(4).setRank(1);
-            cards.sort(Collections.reverseOrder());
+    /**
+     * NOTE: Will need to make a two card hand valid.
+     * Determines the winner of a list of hands.
+     * @param hands ArrayList of hands to find winner of.
+     * @return The winning hand.
+     */
+    public static ArrayList<Hand> winner(ArrayList<Hand> hands, Hand communityHand){
 
+        // Map the best of each hand's composite hands to the original hand
+        HashMap<Hand, Hand> bestsMap = new HashMap<>();
+        hands.forEach(hand -> bestsMap.put(winner(buildCompositeHands(hand, communityHand)), hand));
+
+        // Find the best of the best composite hands.
+        Hand best =  winner(new ArrayList<>(bestsMap.keySet()));
+
+        return new ArrayList<>(List.of(bestsMap.get(best), best));
+    }
+
+    /**
+     * Determines the winner of a list of hands.
+     * @param hands ArrayList of hands to find winner of.
+     * @return The winning hand.
+     */
+    public static Hand winner(ArrayList<Hand> hands){
+        return rankHands(hands).get(0);
+    }
+
+    private static ArrayList<Hand> buildCompositeHands(Hand hand, Hand communityHand){
+        ArrayList<Card> allCards = new ArrayList<>();
+        allCards.addAll(hand.getCards());
+        allCards.addAll(communityHand.getCards());
+
+        ArrayList<Hand> compositeHands = new ArrayList<>();
+        for (int[] ints : new Combinations(allCards.size(), 5)){
+            compositeHands.add(
+                    Evaluator.createHand(
+                            Arrays.stream(ints).mapToObj(allCards::get).collect(
+                                    Collectors.toCollection(ArrayList::new))));
         }
-        return highStraight;
+        return compositeHands;
     }
 
     /**
@@ -170,5 +126,39 @@ public class Evaluator {
         HashMap<Integer, Long> histogram = new HashMap<>();
         cards.forEach(c-> histogram.put(c.getRank(), frequency.getCount(c.getRank())));
         return histogram;
+    }
+
+    /**
+     * Ranks hands from highest (winner) to lowest.
+     * @param hands An ArrayList of hands to be ranked
+     * @return Ranked ArrayList of hands.
+     */
+    private static ArrayList<Hand> rankHands(ArrayList<Hand> hands){
+        hands.sort(Collections.reverseOrder());
+        return hands;
+    }
+
+    private static boolean testForStraight(Hand hand){
+        ArrayList<Card> cards = hand.getCards();
+        boolean highStraight =
+                cards.get(0).getRank() - cards.get(4).getRank()
+                == 4;
+        // If cards contain an Ace and it's not a high straight test for Ace high and low straight.
+        if(!highStraight && hand.containsByRank(Rank.ACE)){
+            cards.get(0).setRank(1);
+            cards.sort(Collections.reverseOrder());
+            boolean lowStraight =
+                    cards.get(0).getRank() - cards.get(cards.size()-1).getRank()
+                    == 4;
+
+            // If we didn't find a low straight put rank back.
+            if(lowStraight){
+                return true;
+            } else
+                cards.get(4).setRank(1);
+            cards.sort(Collections.reverseOrder());
+
+        }
+        return highStraight;
     }
 }

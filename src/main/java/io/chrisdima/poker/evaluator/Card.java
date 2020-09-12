@@ -10,7 +10,7 @@ public class Card implements Comparable<Card>{
     private final int suit;
     private final String unicodeChar;
 
-    public Card(int rank, int suit){
+    Card(int rank, int suit){
         this.rank = rank;
         this.suit = suit;
         this.unicodeChar = Unicode.map(rank,suit);

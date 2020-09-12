@@ -8,7 +8,7 @@ public class Grouped {
 
     private final HashMap<Integer, Group> groups = new HashMap<>();
 
-    public Grouped(Hand hand){
+    Grouped(Hand hand){
         hand.getCards().forEach(card -> {
             if(groups.containsKey(card.getRank())){
                 Group group = this.groups.get(card.getRank());

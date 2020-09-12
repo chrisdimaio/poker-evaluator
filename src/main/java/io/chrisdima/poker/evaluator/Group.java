@@ -8,7 +8,7 @@ public class Group implements Comparable<Group>{
     private Card card;
     @Setter
     private int count;
-    public Group(Card card){
+    Group(Card card){
         this.card = card;
         this.count = 1;
     }

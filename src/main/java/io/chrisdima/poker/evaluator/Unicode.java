@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 //https://en.wikipedia.org/wiki/Playing_cards_in_Unicode#Block
-public class Unicode {
+class Unicode {
     private static final Map<Integer, Integer> suitMap;
     static {
         suitMap = new HashMap<>();

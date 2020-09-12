@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.chrisdima</groupId>
-  <artifactId>vertx-fun</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>poker-evaluator</artifactId>
+  <version>0.1</version>
 
-  <name>vertx-fun</name>
+  <name>poker-evaluator</name>
   <url>http://www.chrisdima.io</url>
 
   <properties>
@@ -28,16 +28,6 @@
       <artifactId>lombok</artifactId>
       <version>1.18.12</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.11.2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-      <version>3.9.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

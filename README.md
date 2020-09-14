@@ -13,6 +13,7 @@ The simple API exposes three methods and a class.
 
 ```java
 Card card = Card(Rank.ACA, Suit.SPADES);
+```
 
 ```java
 Hand hand = Evaluator.createHand(A list of cards);

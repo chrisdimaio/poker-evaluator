@@ -22,7 +22,7 @@ public class Hand implements Comparable<Hand>{
     private boolean straightFlush;
     private boolean highCard;
 
-    public Hand(ArrayList<Card> cards){
+    Hand(ArrayList<Card> cards){
         if(cards.size() <= 5 && cards.size() >= 2) {
             cards.sort(Collections.reverseOrder());
             this.cards = cards;

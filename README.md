@@ -12,7 +12,7 @@ Evaluates a poker hand and determines the winner. Five card draw and Texas Hold'
 The simple API exposes three methods and a class.
 
 ```java
-Card card = Card(Rank.ACA, Suit.SPADES);
+Card card = Card(Rank.ACE, Suit.SPADES);
 ```
 
 ```java

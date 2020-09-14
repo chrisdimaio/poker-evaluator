@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.com/chrisdimaio/poker-evaluator.svg?branch=master)](https://travis-ci.com/chrisdimaio/poker-evaluator)
 
 ## Overview
-Evaluators a poker hands and determines the winning hand. 5 card draw style and Texas Hold'em style with community cards is supported.
+Evaluates a poker hand and determines the winning hand. Five card draw and Texas Hold'em style with community cards is supported.
 
 ## API
 The simple API exposes three methods.

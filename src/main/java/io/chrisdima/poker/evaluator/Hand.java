@@ -7,6 +7,8 @@ import java.util.*;
 
 @Getter @Setter
 public class Hand implements Comparable<Hand>{
+    private HandType handType;
+
     private ArrayList<Card> cards;
     private HashMap<Integer, Long> histogram;
     private ArrayList<Long> counts;
@@ -39,22 +41,35 @@ public class Hand implements Comparable<Hand>{
         return false;
     }
 
+    protected long getHandHash(){
+        return new HandHash(this).getHandHash();
+    }
+
     @Override
     public int compareTo(Hand other){
-        if(this.getHandValue() > other.getHandValue()){
-            return this.getHandValue() - other.getHandValue();
-        } else if(this.getHandValue() < other.getHandValue()){
-            return this.getHandValue() - other.getHandValue();
-        } else {
-            Grouped grouped1 = new Grouped(this);
-            Grouped grouped2 = new Grouped(other);
-            if(grouped1.compare(grouped2)){
-                return 1;
-            } else {
-                return -1;
-            }
-        }
+        System.out.println(this);
+        System.out.println(other);
+        long diff = this.getHandHash() - other.getHandHash();
+//        System.out.println(diff);
+        return (int) diff;
     }
+
+//    @Override
+//    public int compareTo(Hand other){
+//        if(this.getHandValue() > other.getHandValue()){
+//            return this.getHandValue() - other.getHandValue();
+//        } else if(this.getHandValue() < other.getHandValue()){
+//            return this.getHandValue() - other.getHandValue();
+//        } else {
+//            Grouped grouped1 = new Grouped(this);
+//            Grouped grouped2 = new Grouped(other);
+//            if(grouped1.compare(grouped2)){
+//                return 1;
+//            } else {
+//                return -1;
+//            }
+//        }
+//    }
 
     @Override
     public String toString() {

@@ -18,15 +18,29 @@ public class Evaluator {
     private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
     public static void main( String[] args ){
+        ArrayList<Card> high = new ArrayList<>();
+        high.add(new Card(Rank.TEN, Suit.CLUBS));
+        high.add(new Card(Rank.JACK, Suit.DIAMONDS));
+        high.add(new Card(Rank.QUEEN, Suit.SPADES));
+        high.add(new Card(Rank.KING, Suit.CLUBS));
+        high.add(new Card(Rank.ACE, Suit.SPADES));
+
         ArrayList<Card> low = new ArrayList<>();
         low.add(new Card(Rank.ACE, Suit.CLUBS));
         low.add(new Card(Rank.TWO, Suit.DIAMONDS));
         low.add(new Card(Rank.THREE, Suit.SPADES));
         low.add(new Card(Rank.FOUR, Suit.CLUBS));
         low.add(new Card(Rank.FIVE, Suit.HEARTS));
-        Hand hand = Evaluator.createHand(low);
-        HandHash hash = new HandHash(hand);
 
+        Hand highHand = Evaluator.createHand(high);
+        Hand lowHand = Evaluator.createHand(low);
+
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(highHand);
+        hands.add(lowHand);
+
+        Hand winner = Evaluator.winner(hands);
+        System.out.println(winner);
     }
 
     public static Hand createHand(ArrayList<Card> cards){
@@ -40,22 +54,35 @@ public class Evaluator {
             hand.setCounts(counts);
             if (hand.getCounts().size() == 2) {
                 if (hand.getCounts().equals(new ArrayList<>(QUADS))) {
-                    hand.setQuads(true);
+//                    hand.setQuads(true);
+                    hand.setHandType(HandType.QUADS);
                 } else if (hand.getCounts().equals(new ArrayList<>(BOAT))) {
                     hand.setBoat(true);
                 }
             } else if (hand.getCounts().size() == 3) {
                 if (hand.getCounts().equals(new ArrayList<>(THREE_OF_KIND))) {
-                    hand.setThreeOfAKind(true);
+//                    hand.setThreeOfAKind(true);
+                    hand.setHandType(HandType.THREE_OF_A_KIND);
                 } else if (hand.getCounts().equals(new ArrayList<>(TWO_PAIR))) {
-                    hand.setTwoPair(true);
+//                    hand.setTwoPair(true);
+                    hand.setHandType(HandType.TWO_PAIR);
                 }
             } else if (hand.getCounts().size() == 4) {
-                hand.setOnePair(true);
+//                hand.setOnePair(true);
+                hand.setHandType(HandType.ONE_PAIR);
             }
-            hand.setFlush(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1);
-            hand.setStraight(testForStraight(hand));
-            hand.setStraightFlush(hand.isStraight() && hand.isFlush());
+            if(cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1) {
+//                hand.setFlush(true);
+                hand.setHandType(HandType.FLUSH);
+            }
+            if(testForStraight(hand)) {
+//                hand.setStraight(true);
+                hand.setHandType(HandType.STRAIGHT);
+            }
+            if(hand.isStraight() && hand.isFlush()) {
+//                hand.setStraightFlush(true);
+                hand.setHandType(HandType.STRAIGHT_FLUSH);
+            }
             hand.setHighCard(!(hand.isQuads() || hand.isBoat() || hand.isThreeOfAKind() || hand.isTwoPair() || hand.isOnePair()
                     || hand.isFlush() || hand.isStraight() || hand.isStraightFlush()));
             if (hand.isHighCard()) {
@@ -144,7 +171,9 @@ public class Evaluator {
      * @return Ranked ArrayList of hands.
      */
     private static ArrayList<Hand> rankHands(ArrayList<Hand> hands){
-        hands.sort(Collections.reverseOrder());
+//        hands.sort(Collections.reverseOrder());
+        Collections.sort(hands);
+//        System.out.println(hands);
         return hands;
     }
 

@@ -21,7 +21,7 @@ public class HandHash {
             suits.add((long) card.getSuit());
         });
 
-        setHandType(14L);
+        setHandType(hand.getHandType().getValue());
         setHandRanks(ranks);
         setHandSuits(suits);
     }
@@ -50,5 +50,6 @@ public class HandHash {
 
         //Flip those bits in handValue.
         handHash = handHash ^ value;
+//        System.out.println(handHash + ": " + Long.toBinaryString(handHash));
     }
 }

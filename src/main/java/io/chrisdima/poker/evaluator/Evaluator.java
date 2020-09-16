@@ -17,7 +17,17 @@ public class Evaluator {
     private static final List<Long> THREE_OF_KIND = Arrays.asList(1L, 1L, 3L);
     private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
-    public static void main( String[] args ){}
+    public static void main( String[] args ){
+        ArrayList<Card> low = new ArrayList<>();
+        low.add(new Card(Rank.ACE, Suit.CLUBS));
+        low.add(new Card(Rank.TWO, Suit.DIAMONDS));
+        low.add(new Card(Rank.THREE, Suit.SPADES));
+        low.add(new Card(Rank.FOUR, Suit.CLUBS));
+        low.add(new Card(Rank.FIVE, Suit.HEARTS));
+        Hand hand = Evaluator.createHand(low);
+        HandHash hash = new HandHash(hand);
+
+    }
 
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);

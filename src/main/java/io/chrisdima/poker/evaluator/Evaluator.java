@@ -46,36 +46,7 @@ public class Evaluator {
             ArrayList<Long> counts = new ArrayList<>(hand.getHistogram().values());
             Collections.sort(counts);
             hand.setCounts(counts);
-            if (hand.getCounts().size() == 2) {
-                if (hand.getCounts().equals(new ArrayList<>(QUADS))) {
-                    hand.setHandType(HandType.QUADS);
-                } else if (hand.getCounts().equals(new ArrayList<>(BOAT))) {
-                    hand.setHandType(HandType.BOAT);
-                }
-            } else if (hand.getCounts().size() == 3) {
-                if (hand.getCounts().equals(new ArrayList<>(THREE_OF_KIND))) {
-                    hand.setHandType(HandType.THREE_OF_A_KIND);
-                } else if (hand.getCounts().equals(new ArrayList<>(TWO_PAIR))) {
-                    hand.setHandType(HandType.TWO_PAIR);
-                }
-            } else if (hand.getCounts().size() == 4) {
-                hand.setHandType(HandType.ONE_PAIR);
-            }
-
-            boolean isStraight = testForStraight(hand);
-            boolean isFlush = cards.stream().map(Card::getSuit).distinct().limit(2).count() <= 1;
-            if(isStraight) {
-                hand.setHandType(HandType.STRAIGHT);
-            }
-            if(isFlush) {
-                hand.setHandType(HandType.FLUSH);
-            }
-            if(isStraight && isFlush) {
-                hand.setHandType(HandType.STRAIGHT_FLUSH);
-            }
-            if(hand.getHandType() == null) {
-                hand.setHandType(HandType.HIGH_CARD);
-            }
+            hand.setHandType(determineHandType(hand));
         }
         return hand;
     }
@@ -115,6 +86,39 @@ public class Evaluator {
         }
         return compositeHands;
     }
+
+    private static HandType determineHandType(Hand hand){
+        if (hand.getCounts().size() == 4) {
+            return HandType.ONE_PAIR;
+        } else if (hand.getCounts().size() == 3) {
+            if (hand.getCounts().equals(new ArrayList<>(THREE_OF_KIND))) {
+                return HandType.THREE_OF_A_KIND;
+            } else if (hand.getCounts().equals(new ArrayList<>(TWO_PAIR))) {
+                return HandType.TWO_PAIR;
+            }
+        } else if (hand.getCounts().size() == 2) {
+            if (hand.getCounts().equals(new ArrayList<>(QUADS))) {
+                return HandType.QUADS;
+            } else if (hand.getCounts().equals(new ArrayList<>(BOAT))) {
+                return HandType.BOAT;
+            }
+        }
+
+        boolean isStraight = testForStraight(hand);
+        boolean isFlush = hand.getCards().stream().map(Card::getSuit).distinct().limit(2).count() <= 1;
+        if(isStraight && isFlush) {
+            return HandType.STRAIGHT_FLUSH;
+        }
+
+        if(isStraight) {
+            return HandType.STRAIGHT;
+        }
+        if(isFlush) {
+            return HandType.FLUSH;
+        }
+        return HandType.HIGH_CARD;
+    }
+
 
     // Can probably modify Grouped to handle this.
     private static HashMap<Integer, Long> getHistogram(ArrayList<Card> cards){

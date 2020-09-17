@@ -12,17 +12,6 @@ public class Hand implements Comparable<Hand>{
     private ArrayList<Card> cards;
     private HashMap<Integer, Long> histogram;
     private ArrayList<Long> counts;
-    private int handValue;
-    private Card highestCard;
-    private boolean quads;
-    private boolean boat;
-    private boolean threeOfAKind;
-    private boolean twoPair;
-    private boolean onePair;
-    private boolean flush;
-    private boolean straight;
-    private boolean straightFlush;
-    private boolean highCard;
 
     Hand(ArrayList<Card> cards){
         if(cards.size() <= 5 && cards.size() >= 2) {
@@ -47,29 +36,14 @@ public class Hand implements Comparable<Hand>{
 
     @Override
     public int compareTo(Hand other){
-        System.out.println(this);
-        System.out.println(other);
         long diff = this.getHandHash() - other.getHandHash();
-//        System.out.println(diff);
-        return (int) diff;
+        if(diff > 0)
+            return 1;
+        else if (diff < 0)
+            return -1;
+        else
+            return 0;
     }
-
-//    @Override
-//    public int compareTo(Hand other){
-//        if(this.getHandValue() > other.getHandValue()){
-//            return this.getHandValue() - other.getHandValue();
-//        } else if(this.getHandValue() < other.getHandValue()){
-//            return this.getHandValue() - other.getHandValue();
-//        } else {
-//            Grouped grouped1 = new Grouped(this);
-//            Grouped grouped2 = new Grouped(other);
-//            if(grouped1.compare(grouped2)){
-//                return 1;
-//            } else {
-//                return -1;
-//            }
-//        }
-//    }
 
     @Override
     public String toString() {

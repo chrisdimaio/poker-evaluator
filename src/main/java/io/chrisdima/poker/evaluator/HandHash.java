@@ -3,6 +3,7 @@ package io.chrisdima.poker.evaluator;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HandHash {
     private static final int HAND_TYPE_POSITION = 10;
@@ -50,6 +51,5 @@ public class HandHash {
 
         //Flip those bits in handValue.
         handHash = handHash ^ value;
-//        System.out.println(handHash + ": " + Long.toBinaryString(handHash));
     }
 }

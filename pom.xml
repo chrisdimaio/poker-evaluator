@@ -6,7 +6,7 @@
 
   <groupId>io.chrisdima</groupId>
   <artifactId>poker-evaluator</artifactId>
-  <version>0.1</version>
+  <version>0.2.0</version>
 
   <name>poker-evaluator</name>
   <url>http://www.chrisdima.io</url>

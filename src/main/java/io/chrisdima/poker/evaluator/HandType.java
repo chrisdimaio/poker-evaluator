@@ -3,6 +3,7 @@ package io.chrisdima.poker.evaluator;
 import lombok.Getter;
 
 public enum HandType {
+    INCOMPLETE(-1),
     HIGH_CARD(0),
     ONE_PAIR(1),
     TWO_PAIR(2),

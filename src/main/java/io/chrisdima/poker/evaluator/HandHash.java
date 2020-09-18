@@ -40,7 +40,7 @@ public class HandHash {
     }
 
     private void setHalfByteRange(int position, ArrayList<Long> lst){
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < lst.size(); i++){
             setHalfByte(position + i, lst.get(i));
         }
     }

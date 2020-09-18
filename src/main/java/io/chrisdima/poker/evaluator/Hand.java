@@ -46,6 +46,16 @@ public class Hand implements Comparable<Hand>{
     }
 
     @Override
+    public int hashCode() {
+        return (int)getHandHash();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(cards);
     }

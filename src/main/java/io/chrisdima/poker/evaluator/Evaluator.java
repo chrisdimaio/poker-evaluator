@@ -16,26 +16,7 @@ public class Evaluator {
     private static final List<Long> THREE_OF_KIND = Arrays.asList(1L, 1L, 3L);
     private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
-    public static void main( String[] args ){
-        Hand straight = Evaluator.createHand(new ArrayList<>(List.of(
-                new Card(Rank.TEN, Suit.HEARTS),
-                new Card(Rank.JACK, Suit.HEARTS),
-                new Card(Rank.QUEEN, Suit.DIAMONDS),
-                new Card(Rank.KING, Suit.CLUBS),
-                new Card(Rank.ACE, Suit.SPADES)
-        )));
-
-        Hand straightFlush = Evaluator.createHand(new ArrayList<>(List.of(
-                new Card(Rank.TWO, Suit.SPADES),
-                new Card(Rank.THREE, Suit.CLUBS),
-                new Card(Rank.FOUR, Suit.SPADES),
-                new Card(Rank.FIVE, Suit.SPADES),
-                new Card(Rank.SIX, Suit.SPADES)
-        )));
-
-        ArrayList<Hand> againstStraightFlush = new ArrayList<>(List.of(straight, straightFlush));
-        System.out.println(Evaluator.winner(againstStraightFlush));
-    }
+    public static void main( String[] args ){}
 
     public static Hand createHand(ArrayList<Card> cards){
         Hand hand = new Hand(cards);
@@ -47,6 +28,8 @@ public class Evaluator {
             Collections.sort(counts);
             hand.setCounts(counts);
             hand.setHandType(determineHandType(hand));
+        } else {
+            hand.setHandType(HandType.INCOMPLETE);
         }
         return hand;
     }
@@ -54,13 +37,21 @@ public class Evaluator {
     public static ArrayList<Hand> winner(ArrayList<Hand> hands, Hand communityHand){
 
         // Map the best of each hand's composite hands to the original hand
-        HashMap<Hand, Hand> bestsMap = new HashMap<>();
-        hands.forEach(hand -> bestsMap.put(winner(buildCompositeHands(hand, communityHand)), hand));
+        HashMap<Hand, ArrayList<Hand>> bestsMap = new HashMap<>();
+        hands.forEach(hand -> {
+            Hand key = winner(buildCompositeHands(hand, communityHand));
+            if(!bestsMap.containsKey(key)) {
+                bestsMap.put(key, new ArrayList<>());
+            }
+            bestsMap.get(key).add(hand);
+        });
 
         // Find the best of the best composite hands.
         Hand best =  winner(new ArrayList<>(bestsMap.keySet()));
 
-        return new ArrayList<>(List.of(bestsMap.get(best), best));
+        ArrayList<Hand> bestOfBest = new ArrayList<>(bestsMap.get(best));
+        bestOfBest.add(best);
+        return bestOfBest;
     }
 
     /**

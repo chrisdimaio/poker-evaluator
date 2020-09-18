@@ -263,8 +263,7 @@ public class EvaluatorTest {
         Hand communityHand = Evaluator.createHand(new ArrayList<>(List.of(
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.THREE, Suit.HEARTS),
-                new Card(Rank.FOUR, Suit.HEARTS),
-                new Card(Rank.QUEEN, Suit.CLUBS)
+                new Card(Rank.QUEEN, Suit.HEARTS)
         )));
 
         ArrayList<Hand> hands = new ArrayList<>();
@@ -275,9 +274,37 @@ public class EvaluatorTest {
 
         hands.add(Evaluator.createHand(new ArrayList<>(List.of(
                 new Card(Rank.TWO, Suit.CLUBS),
-                new Card(Rank.QUEEN, Suit.HEARTS)
+                new Card(Rank.QUEEN, Suit.SPADES)
         ))));
 
         assertEquals(hands.get(0), Evaluator.winner(hands, communityHand).get(0));
+    }
+
+    @Test
+    public void winnerHoldemTie(){
+        Hand communityHand = Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.ACE, Suit.HEARTS),
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.QUEEN, Suit.DIAMONDS),
+                new Card(Rank.JACK, Suit.CLUBS),
+                new Card(Rank.TEN, Suit.CLUBS)
+        )));
+
+        ArrayList<Hand> hands = new ArrayList<>();
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.DIAMONDS),
+                new Card(Rank.SEVEN, Suit.HEARTS)
+        ))));
+
+        hands.add(Evaluator.createHand(new ArrayList<>(List.of(
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.SEVEN, Suit.SPADES)
+        ))));
+
+        ArrayList<Hand> winners = Evaluator.winner(hands, communityHand);
+
+        assertEquals(3, winners.size());
+        assertEquals(hands.get(0), Evaluator.winner(hands, communityHand).get(0));
+        assertEquals(hands.get(1), Evaluator.winner(hands, communityHand).get(1));
     }
 }

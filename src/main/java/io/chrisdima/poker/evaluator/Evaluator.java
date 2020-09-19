@@ -16,6 +16,7 @@ public class Evaluator {
   private static final List<Long> TWO_PAIR = Arrays.asList(1L, 2L, 2L);
 
   public static void main(String[] args) {
+    System.out.println(Deck.getDeck());
   }
 
   /**

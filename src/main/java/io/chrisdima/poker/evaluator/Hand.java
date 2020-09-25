@@ -1,9 +1,10 @@
 package io.chrisdima.poker.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.*;
 
 @Getter
 @Setter
@@ -25,9 +26,9 @@ public class Hand implements Comparable<Hand> {
 
   protected boolean containsByRank(int rank) {
     for (Card card : cards) {
-        if (card.getRank() == rank) {
-            return true;
-        }
+      if (card.getRank() == rank) {
+        return true;
+      }
     }
     return false;
   }
@@ -39,13 +40,13 @@ public class Hand implements Comparable<Hand> {
   @Override
   public int compareTo(Hand other) {
     long diff = this.getHandHash() - other.getHandHash();
-      if (diff > 0) {
-          return 1;
-      } else if (diff < 0) {
-          return -1;
-      } else {
-          return 0;
-      }
+    if (diff > 0) {
+      return 1;
+    } else if (diff < 0) {
+      return -1;
+    } else {
+      return 0;
+    }
   }
 
   @Override
